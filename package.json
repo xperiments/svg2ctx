@@ -26,6 +26,10 @@
     "bin": "./bin",
     "src": "./src",
     "node_modules/fabric": "./node_modules/fabric"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xperiments/svg2ctx.git"
+  },  
 
 }
