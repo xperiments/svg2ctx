@@ -104,7 +104,7 @@
 
       var ext = path.extname(fileDestination).toLowerCase();
 
-      xcanvas = new jsCanvas( path.basename( fileDestination, ext ) );
+      xcanvas = new jsCanvas( path.basename( fileDestination, ext ) ); 
       xcanvas.compile ( data, onConvertedData );  
     });
   }
