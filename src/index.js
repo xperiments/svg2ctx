@@ -85,8 +85,9 @@
       {
         return console.log(err);
       }
+      var ext = path.extname(fileDestination).toLowerCase();
 
-      xcanvas = new jsCanvas('jscanvastest');
+      xcanvas = new jsCanvas( path.basename( fileDestination, ext ) );
       xcanvas.compile ( data, onConvertedData );  
     });
   }
@@ -101,10 +102,9 @@
         return console.log(err);
       }
 
-      xcanvas = new jsCanvas('jscanvastest');
       var ext = path.extname(fileDestination).toLowerCase();
-      var isJS = ext == ".js";
 
+      xcanvas = new jsCanvas( path.basename( fileDestination, ext ) );
       xcanvas.compile ( data, onConvertedData );  
     });
   }
