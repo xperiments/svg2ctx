@@ -30,6 +30,6 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/xperiments/svg2ctx.git"
-  },  
+  }  
 
 }
