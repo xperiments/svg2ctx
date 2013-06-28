@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-require('../src/index').cmd();
+var SVGConverter = require('./../src/SVGConverter');
+SVGConverter.cmd();

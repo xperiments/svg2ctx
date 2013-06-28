@@ -1,10 +1,10 @@
 {
   "name": "svg2ctx",
   "preferGlobal": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "xperiments aka Pedro Casaubon",
   "description": "NodeJS module for converting SVG files to Canvas context instruct",
-  "main": "./src/index.js",
+  "main": "./src/SVGConverter.js",
   "bin": {
     "svg2ctx": "./bin/svg2ctx"
   },
@@ -12,11 +12,15 @@
   {
     "canvas"    :"*",
     "uglify-js" :"*",
-    "sprintf-js" :"*"
+    "sprintf-js" :"*",
+  	"handlebars":"*",
+  	"optimist":"*",
+  	"node-beautify":"*"
   },
   "bundledDependencies": [
-    "fabric"  
-  ],  
+    "fabric",
+	"node-jsmin"
+  ],
   "analyze": false,
   "license": "MIT",
   "engines": {
@@ -25,11 +29,12 @@
   "directories": {
     "bin": "./bin",
     "src": "./src",
-    "node_modules/fabric": "./node_modules/fabric"
+    "node_modules/fabric": "./node_modules/fabric",
+    "node_modules/node-jsmin": "./node_modules/node-jsmin"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/xperiments/svg2ctx.git"
-  }  
+  }
 
 }
