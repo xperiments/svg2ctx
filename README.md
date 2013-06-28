@@ -7,12 +7,12 @@ WIP NodeJS module for converting svg to canvas context command class.
     Install
         $ [sudo] npm install -g svg2ctx
 
+svg2ctx v0.0.4
 Usage: svg2ctx -s sourceFile -d destinationFile
 
-    Options:
-      -s, --source        Input SVG File [required]
-      -d, --destination   Output destination. Example: outputFile.js  [required]
-      ( EXPERIMENTAL: outputFile.png => Writes the output string to a png. See NodeStringImage.ts )
-      -p, --plain         Export plain beautified code [default: false]
-      -t, --template      Use Custom Javascript output template [default: "ctxClassTemplate.tpl"]
-      -v, --version       Show version
+Options:
+  -s, --source       Input SVG File                                                                                                         [required]
+  -d, --destination  Output destination.                                                                                                    [required]
+  -c, --className    Specifiy the full package className, ex: ex.xperiments.GraphicTest [Default: pulsar.display.(destination file name )]  [default: "$filename$"]
+  -p, --plain        Export plain beautified code                                                                                           [default: false]
+  -t, --template     Use Custom Javascript output template http://www.yahoo.com                                                             [default: "ctxClassTemplate.tpl"]
