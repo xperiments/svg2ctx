@@ -294,7 +294,6 @@ class SVGConverter {
 		var canvas:HTMLCanvasElement = <HTMLCanvasElement>NodeStringImage.encode( compressed.code, sqr2 );
 		var imageData:string = canvas.toDataURL().replace( /^data:image\/png;base64,/, "" );
 
-		//TEST     hhhhh
 		SVGConverter.resultCallBack && SVGConverter.resultCallBack( imageData );
 	}
 
