@@ -1,4 +1,4 @@
-# svg2ctx 0.0.4
+# svg2ctx 0.0.5
 
 WIP NodeJS module for converting svg to canvas context command class.
 
