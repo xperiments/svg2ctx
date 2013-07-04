@@ -66,7 +66,7 @@ var StringImage = (function () {
         var str = "";
 
         var isFirefox = typeof InstallTrigger !== 'undefined';
-        if (!isFirefox) {
+        if (isFirefox) {
             var fromCharCode = [];
             for (var i = 0; i < 256; i++) {
                 fromCharCode.push(String.fromCharCode(i));

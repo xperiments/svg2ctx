@@ -102,8 +102,9 @@ class StringImage
 
 		//http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 		var isFirefox:boolean = typeof InstallTrigger !== 'undefined';
-		if(!isFirefox)
+		if(isFirefox)
 		{
+
 			var fromCharCode:string[] = [];
 			for( var i:number=0; i<256; i++ )
 			{

@@ -276,8 +276,10 @@ class SVGConverter {
 	 */
 	private static onConvertedDataToCode()
 	{
+		var code:string = beautifyJs( SVGConverter.ctxClassTemplate( SVGConverter.xcanvas.toTemplateData() ) );
+		var compressed:IUglifyJSResult = UglifyJS.minify( jsmin( code ), SVGConverter.uglifyOptions );
 
-		SVGConverter.resultCallBack && SVGConverter.resultCallBack( UglifyJS.minify( SVGConverter.xcanvas.toString(), SVGConverter.uglifyOptions ).code )
+		SVGConverter.resultCallBack && SVGConverter.resultCallBack( compressed );
 	}
 
 	/**
@@ -285,11 +287,15 @@ class SVGConverter {
 	 */
 	private static onConvertedDataToCanvas()
 	{
-		var compressed:IUglifyJSResult = UglifyJS.minify( SVGConverter.xcanvas.toString(), SVGConverter.uglifyOptions );
+		var code:string = beautifyJs( SVGConverter.ctxClassTemplate( SVGConverter.xcanvas.toTemplateData() ) );
+		var compressed:IUglifyJSResult = UglifyJS.minify( jsmin( code ), SVGConverter.uglifyOptions );
 		var len:number = compressed.code.length / 3;
 		var sqr2:number = SVGConverter.getNextPowerOfTwo( Math.sqrt( len ) );
 		var canvas:HTMLCanvasElement = <HTMLCanvasElement>NodeStringImage.encode( compressed.code, sqr2 );
-		SVGConverter.resultCallBack && SVGConverter.resultCallBack( canvas );
+		var imageData:string = canvas.toDataURL().replace( /^data:image\/png;base64,/, "" );
+
+
+		SVGConverter.resultCallBack && SVGConverter.resultCallBack( imageData );
 	}
 
 	/**

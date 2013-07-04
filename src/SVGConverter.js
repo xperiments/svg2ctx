@@ -172,15 +172,21 @@ var SVGConverter = (function () {
     };
 
     SVGConverter.onConvertedDataToCode = function () {
-        SVGConverter.resultCallBack && SVGConverter.resultCallBack(UglifyJS.minify(SVGConverter.xcanvas.toString(), SVGConverter.uglifyOptions).code);
+        var code = beautifyJs(SVGConverter.ctxClassTemplate(SVGConverter.xcanvas.toTemplateData()));
+        var compressed = UglifyJS.minify(jsmin(code), SVGConverter.uglifyOptions);
+
+        SVGConverter.resultCallBack && SVGConverter.resultCallBack(compressed);
     };
 
     SVGConverter.onConvertedDataToCanvas = function () {
-        var compressed = UglifyJS.minify(SVGConverter.xcanvas.toString(), SVGConverter.uglifyOptions);
+        var code = beautifyJs(SVGConverter.ctxClassTemplate(SVGConverter.xcanvas.toTemplateData()));
+        var compressed = UglifyJS.minify(jsmin(code), SVGConverter.uglifyOptions);
         var len = compressed.code.length / 3;
         var sqr2 = SVGConverter.getNextPowerOfTwo(Math.sqrt(len));
         var canvas = NodeStringImage.encode(compressed.code, sqr2);
-        SVGConverter.resultCallBack && SVGConverter.resultCallBack(canvas);
+        var imageData = canvas.toDataURL().replace(/^data:image\/png;base64,/, "");
+
+        SVGConverter.resultCallBack && SVGConverter.resultCallBack(imageData);
     };
 
     SVGConverter.getNextPowerOfTwo = function (num) {
