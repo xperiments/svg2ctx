@@ -14,6 +14,12 @@ var jsCanvas = 		require( './tsCanvas' );
 var NodeStringImage = 	require( './NodeStringImage' );
 var nodePackage = 	require( './../package.json' );
 
+// register handlebars helper
+// this helpers delete the first clearRect
+handlebars.registerHelper('noClearRect', function( w,h ) {
+	return this.render.replace('ctx.clearRect(0.00,0.00,'+w+'.00,'+h+'.00);','');
+})
+
 interface IUglifyJSResult
 {
 	code:string;
@@ -38,8 +44,8 @@ class SVGConverter {
 
 
 	private static sourceFile:string;
-	private static className:string;
-	private static package:string;
+	private static className:string ="Pepe";
+	private static package:string ="es.xperiments";
 	private static sourceFileExtension:string;
 	private static destinationFile:string;
 	private static destinationFileExtension:string;
@@ -48,7 +54,7 @@ class SVGConverter {
 	private static inlineImages:bool = false;
 	private static xcanvas:any;
 	private static resultCallBack:( data )=>void;
-	private static uglifyOptions:any = {fromString: true,compress: { sequences: false }};
+	private static uglifyOptions:any = {fromString: true,compress: { sequences: false }, mangle:true };
 
 
 	/**
@@ -98,6 +104,7 @@ class SVGConverter {
 			.argv;
 
 
+		SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate( argv.t =='ctxClassTemplate.tpl' ? path.resolve(__dirname, 'ctxClassTemplate.tpl'): argv.t );
 
 		SVGConverter.package = "pulsar.display";
 		SVGConverter.resultCallBack = null;
@@ -126,8 +133,22 @@ class SVGConverter {
 	 * @param source The source svg string
 	 * @param callback Callback function called with the resulting js code
 	 */
-	public static convertToCode( source:string, callback?:( code )=>void )
+	public static convertToCode( source:string, className:string, package:string, template:string = "", callback?:( code )=>void )
 	{
+
+		SVGConverter.className = className;
+		SVGConverter.package = package;
+
+		console.log( className, package )
+		if( template!="")
+		{
+			SVGConverter.ctxClassTemplate = handlebars.compile(template, {noEscape: true} );
+		}
+		else
+		{
+			SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate( path.resolve(__dirname, 'ctxClassTemplate.tpl') );
+		}
+
 		SVGConverter.resultCallBack = null;
 		if ( typeof callback != undefined )
 		{
@@ -138,7 +159,7 @@ class SVGConverter {
 		SVGConverter.destinationFile = null;
 		SVGConverter.destinationFileExtension = null;
 
-		SVGConverter.checkSource() && SVGConverter.svg2js( SVGConverterProcessMode.CODE );
+		SVGConverter.svg2js( SVGConverterProcessMode.CODE );
 
 	}
 
@@ -159,7 +180,7 @@ class SVGConverter {
 		SVGConverter.destinationFile = null;
 		SVGConverter.destinationFileExtension = null;
 
-		SVGConverter.checkSource() && SVGConverter.svg2js( SVGConverterProcessMode.CANVAS );
+		SVGConverter.svg2js( SVGConverterProcessMode.CANVAS );
 
 	}
 
@@ -167,12 +188,12 @@ class SVGConverter {
 	 * Loads & compiles the generated class Handlebars template
 	 * @returns Handlebars compiled template
 	 */
-	private static readCtxClassTemplate():(data:any)=>string
+	private static readCtxClassTemplate( file:string ):(data:any)=>string
 	{
 		var template:string = "";
 		try
 		{
-			template = fs.readFileSync( path.resolve(__dirname, 'ctxClassTemplate.tpl'), 'utf8' );
+			template = fs.readFileSync( file, 'utf8' );
 		}
 		catch ( e )
 		{
@@ -180,7 +201,7 @@ class SVGConverter {
 		}
 		return handlebars.compile(template, {noEscape: true} );
 	}
-	private static ctxClassTemplate:(data:any)=>string = SVGConverter.readCtxClassTemplate();
+	private static ctxClassTemplate:(data:any)=>string;
 
 	/**
 	 * Checks if source & destinations files are valid
@@ -214,6 +235,7 @@ class SVGConverter {
 	 */
 	private static svg2js( mode:number )
 	{
+
 		var data:string;
 		SVGConverter.xcanvas = new jsCanvas( path.basename( SVGConverter.destinationFile, SVGConverter.destinationFileExtension ) );
 		try
@@ -235,6 +257,7 @@ class SVGConverter {
 
 			}
 
+			//console.log('paso',SVGConverter.package, SVGConverter.className );
 			SVGConverter.xcanvas.compile( data, onConvertedCallback, {package:SVGConverter.package,className:SVGConverter.className} );
 		}
 		catch ( e )
@@ -277,9 +300,10 @@ class SVGConverter {
 	private static onConvertedDataToCode()
 	{
 		var code:string = beautifyJs( SVGConverter.ctxClassTemplate( SVGConverter.xcanvas.toTemplateData() ) );
+
 		var compressed:IUglifyJSResult = UglifyJS.minify( jsmin( code ), SVGConverter.uglifyOptions );
 
-		SVGConverter.resultCallBack && SVGConverter.resultCallBack( compressed );
+		SVGConverter.resultCallBack && SVGConverter.resultCallBack( compressed.code );
 	}
 
 	/**

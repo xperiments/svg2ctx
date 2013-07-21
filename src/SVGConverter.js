@@ -11,6 +11,10 @@ var jsCanvas = require('./tsCanvas');
 var NodeStringImage = require('./NodeStringImage');
 var nodePackage = require('./../package.json');
 
+handlebars.registerHelper('noClearRect', function (w, h) {
+    return this.render.replace('ctx.clearRect(0.00,0.00,' + w + '.00,' + h + '.00);', '');
+});
+
 var SVGConverterProcessMode;
 (function (SVGConverterProcessMode) {
     SVGConverterProcessMode[SVGConverterProcessMode["CMD"] = 0] = "CMD";
@@ -57,6 +61,8 @@ var SVGConverter = (function () {
             required: false
         }).boolean(['p', 'i', 'v']).demand(['s', 'd']).argv;
 
+        SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate(argv.t == 'ctxClassTemplate.tpl' ? path.resolve(__dirname, 'ctxClassTemplate.tpl') : argv.t);
+
         SVGConverter.package = "pulsar.display";
         SVGConverter.resultCallBack = null;
         SVGConverter.sourceFile = argv.source;
@@ -76,7 +82,18 @@ var SVGConverter = (function () {
         SVGConverter.checkSource() && SVGConverter.svg2js(SVGConverterProcessMode.CMD);
     };
 
-    SVGConverter.convertToCode = function (source, callback) {
+    SVGConverter.convertToCode = function (source, className, package, template, callback) {
+        if (typeof template === "undefined") { template = ""; }
+        SVGConverter.className = className;
+        SVGConverter.package = package;
+
+        console.log(className, package);
+        if (template != "") {
+            SVGConverter.ctxClassTemplate = handlebars.compile(template, { noEscape: true });
+        } else {
+            SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate(path.resolve(__dirname, 'ctxClassTemplate.tpl'));
+        }
+
         SVGConverter.resultCallBack = null;
         if (typeof callback != undefined) {
             SVGConverter.resultCallBack = callback;
@@ -86,7 +103,7 @@ var SVGConverter = (function () {
         SVGConverter.destinationFile = null;
         SVGConverter.destinationFileExtension = null;
 
-        SVGConverter.checkSource() && SVGConverter.svg2js(SVGConverterProcessMode.CODE);
+        SVGConverter.svg2js(SVGConverterProcessMode.CODE);
     };
 
     SVGConverter.convertToCanvas = function (source, callback) {
@@ -99,13 +116,13 @@ var SVGConverter = (function () {
         SVGConverter.destinationFile = null;
         SVGConverter.destinationFileExtension = null;
 
-        SVGConverter.checkSource() && SVGConverter.svg2js(SVGConverterProcessMode.CANVAS);
+        SVGConverter.svg2js(SVGConverterProcessMode.CANVAS);
     };
 
-    SVGConverter.readCtxClassTemplate = function () {
+    SVGConverter.readCtxClassTemplate = function (file) {
         var template = "";
         try  {
-            template = fs.readFileSync(path.resolve(__dirname, 'ctxClassTemplate.tpl'), 'utf8');
+            template = fs.readFileSync(file, 'utf8');
         } catch (e) {
             SVGConverter.showError((e).message);
         }
@@ -173,9 +190,10 @@ var SVGConverter = (function () {
 
     SVGConverter.onConvertedDataToCode = function () {
         var code = beautifyJs(SVGConverter.ctxClassTemplate(SVGConverter.xcanvas.toTemplateData()));
+
         var compressed = UglifyJS.minify(jsmin(code), SVGConverter.uglifyOptions);
 
-        SVGConverter.resultCallBack && SVGConverter.resultCallBack(compressed);
+        SVGConverter.resultCallBack && SVGConverter.resultCallBack(compressed.code);
     };
 
     SVGConverter.onConvertedDataToCanvas = function () {
@@ -205,13 +223,14 @@ var SVGConverter = (function () {
         console.log(error);
         process.exit();
     };
+    SVGConverter.className = "Pepe";
+    SVGConverter.package = "es.xperiments";
+
     SVGConverter.plainOutput = true;
 
     SVGConverter.inlineImages = false;
 
-    SVGConverter.uglifyOptions = { fromString: true, compress: { sequences: false } };
-
-    SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate();
+    SVGConverter.uglifyOptions = { fromString: true, compress: { sequences: false }, mangle: true };
     return SVGConverter;
 })();
 (module).exports = SVGConverter;
