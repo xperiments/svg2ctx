@@ -14,3 +14,5 @@ node_modules/sprintf-js
 .Spotlight-V100
 .Trashes
 .idea/workspace.xml
+
+*.log

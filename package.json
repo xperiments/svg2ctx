@@ -1,7 +1,7 @@
 {
   "name": "svg2ctx",
   "preferGlobal": true,
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "xperiments aka Pedro Casaubon",
   "description": "NodeJS module for converting SVG files to Canvas context instructions",
   "main": "./src/SVGConverter.js",
