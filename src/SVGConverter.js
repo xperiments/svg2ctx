@@ -59,7 +59,7 @@ var SVGConverter = (function () {
             describe: 'Use Custom Javascript output template http://www.yahoo.com',
             default: 'ctxClassTemplate.tpl',
             required: false
-        }).boolean(['p', 'i', 'v']).demand(['s', 'd']).argv;
+        }).boolean(['p', 'v']).demand(['s', 'd']).argv;
 
         SVGConverter.ctxClassTemplate = SVGConverter.readCtxClassTemplate(argv.t == 'ctxClassTemplate.tpl' ? path.resolve(__dirname, 'ctxClassTemplate.tpl') : argv.t);
 
@@ -223,7 +223,7 @@ var SVGConverter = (function () {
         console.log(error);
         process.exit();
     };
-    SVGConverter.className = "Pepe";
+    SVGConverter.className = "DefaultClassName";
     SVGConverter.package = "es.xperiments";
 
     SVGConverter.plainOutput = true;

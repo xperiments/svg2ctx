@@ -44,7 +44,7 @@ class SVGConverter {
 
 
 	private static sourceFile:string;
-	private static className:string ="Pepe";
+	private static className:string ="DefaultClassName";
 	private static package:string ="es.xperiments";
 	private static sourceFileExtension:string;
 	private static destinationFile:string;
@@ -99,7 +99,7 @@ class SVGConverter {
 				default : true,
 				required:false
 			})*/
-			.boolean(['p','i','v'])
+			.boolean(['p'/*,'i'*/,'v'])
 			.demand( ['s','d'])
 			.argv;
 
