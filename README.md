@@ -1,4 +1,4 @@
-# svg2ctx 0.0.5
+# svg2ctx 0.0.7
 
 WIP NodeJS module for converting svg to canvas context command class.
 
@@ -7,7 +7,7 @@ WIP NodeJS module for converting svg to canvas context command class.
     Install
         $ [sudo] npm install -g svg2ctx
 
-svg2ctx v0.0.4
+svg2ctx v0.0.7
 Usage: svg2ctx -s sourceFile -d destinationFile
 
     Options:
